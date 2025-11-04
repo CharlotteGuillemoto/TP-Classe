@@ -14,10 +14,10 @@ class Student:
 
 
     def add_grade(self, topic: str, grade: float) -> None:
-            if not ( 0 <= grade <= 20):
-                 raise ValueError("Grade must be between 0 and 20")
             self.topic=topic
             self.grade=grade
+            if not ( 0 <= self.grade <= 20):
+                 raise ValueError("Grade must be between 0 and 20")
             if self.topic in self.matière.keys():
                 self.matière[self.topic].append(self.grade)
             else :
@@ -28,9 +28,9 @@ class Student:
             
     
     def compute_average(self, course: str) -> float:
-        if course not in self.grades or len(self.grades[course]) == 0:
-            raise ValueError(f"No grades recorded for course: {course}")
-        return sum(self.grades[course]) / len(self.grades[course])
+        if course not in self.matière or len(self.matière[course]) == 0:
+            return -1
+        return sum(self.matière[course]) / len(self.matière[course])
     
     def report(self):
         """ génère un rapport formaté des moyennes par matière """
@@ -50,16 +50,28 @@ class Student:
 
 
 try:
-    student = Student("Achille", "Talon")
-    student.add_grade("History", 10.)
-    student.add_grade("History", 12.)
-    topics = student.followed_topics()
-    if len(topics) != 1 or "History" not in topics:
-        raise Exception(f"Expecting ['History'] got {topics}")
+    reference_lines = ['Report for student Albert Einstein',
+                       '+===============+===============+',
+                       '|     Topic     |    Average    |',
+                       '+===============+===============+',
+                       '|  Mathematics  |     12.80     |',
+                       '+---------------+---------------+',
+                       '|  Scubadiving  |     12.50     |',
+                       '+---------------+---------------+']
+
+    student = Student("Albert", "Einstein")
+    student.add_grade("Mathematics", 12.80)
+    student.add_grade("Scubadiving", 12.50)
+    report = student.report()
+    report_lines = report.strip().split('\n')
+    for i, (lineref, linestudent) in enumerate(zip(reference_lines, report_lines), start=1):
+        assert lineref == linestudent, f"Ligne {i} : attendu = {lineref}// obtenu = {linestudent}"
+except AssertionError as e:
+    print("Les deux chaines sont différentes")
+    print(e)
 except Exception as e:
-    print('OOPS - There is an issue in your followed_topics method')
+    print("OOPS - Something's wrong")
     print(f"Error message : {e}")
 else:
     print('Congrats ! Your implementation works !')
-
 #print(student.followed_topics)
