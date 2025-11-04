@@ -1,15 +1,16 @@
 from collections import defaultdict
 
 class Student:
+
     def __init__(self, first_name: str, last_name: str):
         self.first_name = first_name
         self.last_name = last_name
+        self.matière={}
         
 
     def __repr__(self):
         return f"{self.first_name} {self.last_name}"
-    def followed_topics(self):
-         return(list.grades.keys)
+    
 
 
     def add_grade(self, topic: str, grade: float) -> None:
@@ -17,9 +18,16 @@ class Student:
                  raise ValueError("Grade must be between 0 and 20")
             self.topic=topic
             self.grade=grade
+            if self.topic in self.matière.keys():
+                self.matière[self.topic].append(self.grade)
+            else :
+                self.matière[self.topic]=[self.grade]
+
+    def followed_topics(self):
+         return(list(self.matière.keys()))
             
     
-def compute_average(self, course: str) -> float:
+    def compute_average(self, course: str) -> float:
         if course not in self.grades or len(self.grades[course]) == 0:
             raise ValueError(f"No grades recorded for course: {course}")
         return sum(self.grades[course]) / len(self.grades[course])
